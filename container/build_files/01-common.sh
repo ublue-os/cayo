@@ -44,6 +44,14 @@ dnf -y install --setopt=install_weak_deps=False \
   ssh-key-dir
 
 # /*
+# use CoreOS' generator for emergency/rescue boot
+# see detail: https://github.com/ublue-os/main/issues/653
+# */
+COREOS_SULOGIN_GENERATOR_PATH=/usr/lib/systemd/system-generators/coreos-sulogin-force-generator
+curl -fSL -o "${COREOS_SULOGIN_GENERATOR_PATH}" https://raw.githubusercontent.com/coreos/fedora-coreos-config/refs/heads/stable/overlay.d/05core/usr/lib/systemd/system-generators/coreos-sulogin-force-generator
+chmod +x "${COREOS_SULOGIN_GENERATOR_PATH}"
+
+# /*
 # Zram Generator
 # */
 cat >/usr/lib/systemd/zram-generator.conf <<'EOF'
