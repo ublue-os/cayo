@@ -1,6 +1,7 @@
 [customizations.installer.kickstart]
 contents = """
 text
+network --device=link --onboot=True
 autopart --type=lvm --fstype=xfs --noswap
 rootpw --lock
 bootloader --append="console=tty0 console=ttyS0,115200"
