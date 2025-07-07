@@ -9,8 +9,10 @@ dnf config-manager --set-enabled centos-kmods-rebuild
 
 # /*
 # install desired kmods and utils
+#
+# --nobest allows match for non-latest kernel
 # */
-dnf -y install \
+dnf -y install --nobest \
     btrfs-progs \
     kmod-aacraid \
     kmod-btrfs \
