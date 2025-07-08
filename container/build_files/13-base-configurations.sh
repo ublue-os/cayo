@@ -76,6 +76,17 @@ OPTIONS="--skip-zeroes --hash=xxhash"
 EOF
 
 # /*
+### SYSUSERS.D
+# */
+
+# /*
+# sysusers for dhcpcd
+# */
+cat >/usr/lib/sysusers.d/cayo-dhcpcd.conf<<'EOF'
+u dhcpcd - "Minimalistic DHCP client" /var/lib/dhcpcd
+EOF
+
+# /*
 ### TMPFILES.D
 # */
 
