@@ -12,3 +12,10 @@ dnf -y install --enablerepo='tailscale-stable' tailscale
 # Install MergerFS
 # */
 /run/build_files/github-release-install.sh trapexit/mergerfs "el$(rpm -E %centos).$(uname -m)"
+
+# /*
+# sysusers for dhcpcd
+# */
+cat >/usr/lib/sysusers.d/cayo-dhcpcd.conf<<'EOF'
+u dhcpcd - "Minimalistic DHCP client" /var/lib/dhcpcd
+EOF

@@ -89,4 +89,4 @@ RUN bash <<'RUNEOF'
 #include "build_files/99-finalize.sh"
 RUNEOF
 
-RUN ["bootc", "container", "lint"]
+RUN ["bootc", "container", "lint", "--fatal-warnings", "--no-truncate"]
