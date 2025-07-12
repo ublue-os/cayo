@@ -161,6 +161,7 @@ fix:
 
 alias run := run-container
 
+# Run Container Image
 [group('Container')]
 [no-exit-message]
 run-container $variant="" $version="":
@@ -176,6 +177,7 @@ run-container $variant="" $version="":
 
 alias build := build-container
 
+# Build Container Image
 [group('Container')]
 build-container $variant="" $version="":
     #!/usr/bin/env bash
@@ -266,6 +268,7 @@ build-container $variant="" $version="":
     {{ podman }} build -f container/Containerfile.in "${BUILD_ARGS[@]}" "${LABELS[@]}" "${TAGS[@]}" {{ justfile_dir() }}/container
 
 # HHD-Dev Rechunk Image
+[group('Container')]
 hhd-rechunk $variant="" $version="":
     #!/usr/bin/env bash
     {{ default-inputs }}
@@ -340,7 +343,8 @@ clean $variant $version $registry="":
         {{ podman }} rmi -f "${CLEAN[@]}"
     fi
 
-# Secureboot
+# Check Secureboot
+[group('CI')]
 secureboot variant="" version="":
     #!/usr/bin/bash
     {{ default-inputs }}
@@ -398,6 +402,7 @@ push-to-registry $variant="" $version="" $destination="" $transport="":
     {{ if env('CI', '') != '' { 'log_sum "\`\`\`"' } else { '' } }}
 
 # Podmaon Machine Init
+[group('Podman Machine')]
 init-machine:
     #!/usr/bin/env bash
     set -ou pipefail
@@ -416,6 +421,7 @@ init-machine:
     exit 0
 
 # Start Podman Machine
+[group('Podman Machine')]
 start-machine: init-machine
     #!/usr/bin/env bash
     set -ou pipefail
@@ -427,6 +433,8 @@ start-machine: init-machine
     fi
     exit 0
 
+# Build Disk Image
+[group('BIB')]
 build-disk $variant="" $version="" $registry="": start-machine
     #!/usr/bin/env bash
     {{ default-inputs }}
@@ -446,9 +454,9 @@ build-disk $variant="" $version="" $registry="": start-machine
         echo "{{ style('error') }}Error:{{ NORMAL }} Image \"$fq_name\" not in image-store" >&2
         exit 1
     fi
-    if ! {{ podman-remote }} image exists $registry/$image_name:$version; then
+    if ! {{ podman-remote }} image exists $fq_name; then
         COPYTMP="$(mktemp -p {{ builddir }} -d -t podman_scp.XXXXXXXXXX)" && trap 'rm -rf $COPYTMP' EXIT SIGINT
-        TMPDIR="$COPYTMP" {{ podman }} image scp $registry/$image_name:$version podman-machine-default-root::
+        TMPDIR="$COPYTMP" {{ podman }} image scp $fq_name podman-machine-default-root::
         rm -rf "$COPYTMP"
     fi
 
@@ -472,6 +480,8 @@ build-disk $variant="" $version="" $registry="": start-machine
         --rootfs xfs \
         $fq_name
 
+# Run Disk Image
+[group('BIB')]
 run-disk $variant="" $version="" $registry="":
     #!/usr/bin/env bash
     {{ default-inputs }}
@@ -501,12 +511,14 @@ run-disk $variant="" $version="" $registry="":
     macadam ssh -- cat /etc/os-release
     macadam ssh -- systemctl status
 
+# Build ISO
+[group('BIB')]
 build-iso $variant="" $version="" $registry="": start-machine
     #!/usr/bin/env bash
     {{ default-inputs }}
     : "${registry:=localhost}"
     {{ get-names }}
-    fq_name="$registry/$image_name:$version"
+    fq_name="$registry/$image_name:$variant$version"
     set -eou pipefail
     # Create Build Dir
     mkdir -p {{ builddir / '$variant-$version' }}
@@ -525,9 +537,9 @@ build-iso $variant="" $version="" $registry="": start-machine
         echo "{{ style('error') }}Error:{{ NORMAL }} Image \"$fq_name\" not in image-store" >&2
         exit 1
     fi
-    if ! {{ podman-remote }} image exists $registry/$image_name:$version; then
+    if ! {{ podman-remote }} image exists $fq_name; then
         COPYTMP="$(mktemp -p {{ builddir }} -d -t podman_scp.XXXXXXXXXX)" && trap 'rm -rf $COPYTMP' EXIT SIGINT
-        TMPDIR="$COPYTMP" {{ podman }} image scp $registry/$image_name:$version podman-machine-default-root::
+        TMPDIR="$COPYTMP" {{ podman }} image scp $fq_name podman-machine-default-root::
         rm -rf "$COPYTMP"
     fi
 
@@ -548,8 +560,10 @@ build-iso $variant="" $version="" $registry="": start-machine
         {{ if env('CI', '') != '' { '--progress verbose' } else { '--progress auto' } }} \
         --type anaconda-iso \
         --use-librepo=True \
-        $registry/$image_name:$version
+        $fq_name
 
+# Run ISO
+[group('BIB')]
 run-iso $variant="" $version="":
     #!/usr/bin/env bash
     {{ default-inputs }}
