@@ -40,6 +40,14 @@ dnf -y install --setopt=install_weak_deps=False \
     xdg-dbus-proxy \
     xdg-user-dirs
 
+# /*
+# Ignition and Cloud-Init Support
+# */
+dnf -y install \
+    ignition \
+    ignition-edge \
+    cloud-init
+
 # /* Currently missing dependencies
 # dnf -y copr enable ublue-os/staging
 # dnf -y install sanoid
