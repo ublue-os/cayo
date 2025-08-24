@@ -97,7 +97,7 @@ The author found, during an install on Proxmox with EFI enabled that Secure Boot
 ```bash
 mokutil --import /etc/pki/akmods/certs/akmods-ublue.der
 ```
-5.  A blue screen for MOK Management will appear, asking you to press `Enter` to proceed.  Do so.
+5.  Reboot.  A blue screen for MOK Management will appear, asking you to press `Enter` to proceed.  Do so.
 6.  Arrow down to `Enroll MOK` and press `Enter`.
 7.  Arrow down to `Continue` and press `Enter`, arrow down to `Yes` on the confirmation screen and press `Enter`.
 8.  Enter `universalblue` as the password when prompted and press `Enter`.
