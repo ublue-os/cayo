@@ -1,6 +1,31 @@
 # Cayo: a Universal Blue server project
 
-*This project is a work in progress!*
+## *This project is pending archival and builds will cease to be published*
+
+> [!IMPORTANT]
+>
+> **TLDR**
+>
+> The core team working on Cayo, a bootc CentOS/Fedora server image, have decided to shut it down.
+>
+> If using `cayo:fedora` images, we suggest migrating to [`ucore:stable`](https://github.com/ublue-os/ucore?tab=readme-ov-file#tag-matrix).
+>
+> If using `cayo:centos` images, either migrate to [`centos-bootc:stream10`](https://quay.io/repository/centos-bootc/centos-bootc) or [`ucore:stable`](https://github.com/ublue-os/ucore?tab=readme-ov-file#tag-matrix).
+>
+> **Why is `ublue-os/cayo` shutting down?**
+>
+> The original core goal of using CentOS for the more stable kernel was exciting, but CentOS 10's compiler optimizations, while execellent, limited use for home lab users with older hardware. This forced an early pivot back to Fedora, and left us building both CentOS and Fedora. It was not a goal to support both. Also, Cayo from Fedora is not significantly different from uCore from Fedora CoreOS, so there was a question of differentiation.
+>
+> We addressed the "more stable kernel" goal by adding a longterm 6.12 kernel build for Cayo from Fedora and hope to integrate that as an option for uCore.
+>
+> We'd hoped to have a dual-mode cloud-init and/or ignition install/config option. While still likely possible, it proved problematic in certain test environments and was dropped.
+>
+> Discussions about sysexts for features (including drivers) were exciting, and we now see some discussion of this happening for upstream Fedora/CoreOS, but could also be brought directly to uCore.
+>
+> This project provided many learning opportunities for CI and build workflows, and lessons learned here have directly impacted and improved the `ublue-os/akmods` build.
+
+
+----
 
 Cayo is a Linux server system intended for container and storage workloads  using included tools like Podman and ZFS. It is suitable for installation on bare metal or virtual machines, and Cockpit provides easy management. Extensions optionally provide features such as Docker CE, NVIDIA drivers, WiFi support, Samba and Virtual Machine hosting with libvirt. Cayo is a bootc image built on the solid foundations of CentOS and Fedora.
 
