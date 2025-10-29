@@ -4,9 +4,9 @@
 
 > [!IMPORTANT]
 >
-> **TLDR**
->
 > The core team working on Cayo, a bootc CentOS/Fedora server image, have decided to shut it down.
+>
+> **TLDR**
 >
 > If using `cayo:fedora` images, we suggest migrating to [`ucore:stable`](https://github.com/ublue-os/ucore?tab=readme-ov-file#tag-matrix).
 >
