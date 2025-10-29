@@ -14,7 +14,7 @@
 >
 > **Why is `ublue-os/cayo` shutting down?**
 >
-> The original core goal of using CentOS for the more stable kernel was exciting, but CentOS 10's compiler optimizations, while execellent, limited use for home lab users with older hardware. This forced an early pivot back to Fedora, and left us building both CentOS and Fedora. It was not a goal to support both. Also, Cayo from Fedora is not significantly different from uCore from Fedora CoreOS, so there was a question of differentiation.
+> The original core goal of using CentOS for the more stable kernel was exciting, but CentOS 10's compiler optimizations, while excellent, limited use for home lab users with older hardware. This forced an early pivot back to Fedora, and left us building both CentOS and Fedora. It was not a goal to support both. Also, Cayo from Fedora is not significantly different from uCore from Fedora CoreOS, so there was a question of differentiation.
 >
 > We addressed the "more stable kernel" goal by adding a longterm 6.12 kernel build for Cayo from Fedora and hope to integrate that as an option for uCore.
 >
