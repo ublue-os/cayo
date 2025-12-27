@@ -7,6 +7,7 @@ builddir := shell('mkdir -p $1 && echo $1', absolute_path(env('CAYO_BUILD', 'bui
 image := "cayo"
 variant := env('CAYO_VARIANT', shell('yq ".defaults.variant" images.yaml'))
 version := env('CAYO_VERSION', shell('yq ".defaults.version" images.yaml'))
+nocache := env('CAYO_NOCACHE','')
 
 # Source Images
 
@@ -241,6 +242,7 @@ build-container $variant="" $version="":
         "--cpp-flag=-DKERNEL_NAME_ARG=KERNEL_NAME=$KERNEL_NAME"
         "--cpp-flag=-DSOURCE_IMAGE=$source_image"
         "--cpp-flag=-DZFS=$AKMODS_ZFS_IMAGE"
+        {{ if nocache != '' { "--cache-ttl=1s" } else { '' } }}
     )
     for FLAG in $image_cpp_flags; do
         BUILD_ARGS+=("--cpp-flag=-D$FLAG")
@@ -440,7 +442,7 @@ build-disk $variant="" $version="" $registry="": start-machine
     {{ default-inputs }}
     : "${registry:=localhost}"
     {{ get-names }}
-    fq_name="$registry/$image_name:$version"
+    fq_name="$registry/$image_name:$variant$version"
     set -eou pipefail
     # Create Build Dir
     mkdir -p {{ builddir / '$variant-$version' }}
