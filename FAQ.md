@@ -5,6 +5,9 @@
 1. [Cayo Images](#images)
 2. [Installation - Anaconda](#anaconda-work-in-progress)
 3. [Installation - Podman](#podman)
+    - [`cayo:centos`](#cayocentos-install)
+    - [`cayo:fedora`](#cayofedora-install)
+    - [Secure Boot](#secure-boot)
 4. [Common Issues](#common-issues)
 
 ### Images
@@ -56,7 +59,7 @@ python -m http.server [port_number]
 
 #### `cayo:centos` Install:
 The following command assumes the target hard drive is `/dev/sda` and the `authorized_keys` file has been created as described above.
-```
+```bash
 sudo podman run \
 --rm --privileged \
 --pid=host \
@@ -72,7 +75,7 @@ bootc install to-disk /dev/sda --root-ssh-authorized-keys /temp/authorized_keys
 The following command assumes the target hard drive is `/dev/sda` and the `authorized_keys` file has been created as described above.
 
 __NOTE:__  Fedora-based installations require explicit specification of the root filesystem type, using the `bootc` argument `--filesystem` at install.
-```
+```bash
 sudo podman run \
 --rm --privileged \
 --pid=host \
@@ -84,9 +87,27 @@ ghcr.io/ublue-os/cayo:fedora \
 bootc install to-disk /dev/sda --root-ssh-authorized-keys /temp/authorized_keys --filesystem xfs
 ```
 
+#### Secure-Boot:  
+The author found, during an install on Proxmox with EFI enabled that Secure Boot prevented the machine from starting.  To fix this:
+
+1.  Boot the machine into it's EFI system (on Proxmox this is `F2`).
+2.  Locate the Secure Boot setting and disable it (in Proxmox this is in the "Device Manager" menu).
+3.  Save settings and exit, boot up normally.
+4.  Log into Cayo and run the following, when prompted for a password type `universalblue` at both prompts:  
+```bash
+mokutil --import /etc/pki/akmods/certs/akmods-ublue.der
+```
+5.  Reboot.  A blue screen for MOK Management will appear, asking you to press `Enter` to proceed.  Do so.
+6.  Arrow down to `Enroll MOK` and press `Enter`.
+7.  Arrow down to `Continue` and press `Enter`, arrow down to `Yes` on the confirmation screen and press `Enter`.
+8.  Enter `universalblue` as the password when prompted and press `Enter`.
+9.  Press `Enter` to reboot.  
+10.  You may now re-activate Secure Boot as per steps 1 to 3.
+
+
 ## Common Issues
 - __Podman install errors out with "out of space" issues.__
-Verify that sufficient RAM has been allocated for the RAM disk.  The minimum recommended values are 8GB for Cayo:10 and 12GB for Cayo:42.
+Verify that sufficient RAM has been allocated for the RAM disk.  The minimum recommended values are 8GB for cayo:centos and 12GB for cayo:fedora.
 
 - __Unable to log in after installation.__
 Confirm that the `--root-ssh-authorized-keys` argument was provided to the `bootc` command during installation.
